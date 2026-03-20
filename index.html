@@ -3,72 +3,115 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Vibe Emotion</title>
+    <title>Vibe Emotion - Infinito</title>
     <style>
-        body { margin: 0; background: #000; color: #fff; font-family: sans-serif; overflow: hidden; display: flex; flex-direction: column; height: 100vh; }
-        #topo-vibe { padding: 15px; text-align: center; font-size: 14px; background: rgba(0,0,0,0.5); position: absolute; width: 100%; z-index: 10; font-weight: bold; color: #00f2ea; }
-        .video-player { flex: 1; display: flex; align-items: center; justify-content: center; background: #000; position: relative; }
-        video { width: 100%; height: 100%; object-fit: contain; }
-        .controles { position: absolute; right: 20px; bottom: 100px; display: flex; flex-direction: column; gap: 25px; align-items: center; }
-        .btn-oio { background: none; border: none; font-size: 35px; cursor: pointer; filter: drop-shadow(0 2px 5px rgba(0,0,0,0.8)); }
-        .cont { font-size: 14px; margin-top: -10px; font-weight: bold; }
-        #btn-add { position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%); background: #fff; color: #000; padding: 12px 25px; border-radius: 30px; font-weight: bold; border: none; font-size: 16px; box-shadow: 0 4px 15px rgba(255,255,255,0.3); }
+        body { margin: 0; background: #000; color: #fff; font-family: sans-serif; overflow: hidden; }
+        
+        /* ⌚ Topo OIO ONE */
+        #header-vibe { 
+            position: fixed; top: 0; width: 100%; z-index: 100;
+            padding: 15px; display: flex; justify-content: space-between; align-items: center;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
+        }
+        #hora-oio { font-size: 13px; color: #00f2ea; font-weight: bold; }
+        .controles-topo { display: flex; gap: 15px; }
+        .modo-btn { background: rgba(255,255,255,0.1); border: 1px solid #444; color: #fff; padding: 5px 10px; border-radius: 15px; font-size: 12px; }
+
+        /* 🔄 Feed Infinito */
+        #feed-container { 
+            height: 100vh; overflow-y: scroll; snap-type: y mandatory; 
+            scroll-behavior: smooth; -webkit-overflow-scrolling: touch;
+        }
+        .video-section { 
+            height: 100vh; width: 100vw; snap-align: start; 
+            position: relative; display: flex; align-items: center; justify-content: center;
+        }
+        video { width: 100%; height: 100%; object-fit: cover; }
+
+        /* ❤️ Interação Nativa */
+        .lateral { position: absolute; right: 15px; bottom: 120px; display: flex; flex-direction: column; gap: 20px; align-items: center; }
+        .btn-acao { background: none; border: none; font-size: 35px; filter: drop-shadow(0 0 5px #000); }
+        .num { font-size: 14px; font-weight: bold; margin-top: -8px; }
+
+        /* 🎬 Botão Flutuante */
+        #add-vibe { 
+            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+            background: #fff; color: #000; padding: 12px 30px; border-radius: 30px;
+            font-weight: bold; z-index: 100; border: none; box-shadow: 0 0 20px rgba(0,242,234,0.5);
+        }
     </style>
 </head>
 <body>
 
-    <div id="topo-vibe">✨ VIBE EMOTION</div>
+    <header id="header-vibe">
+        <div id="hora-oio">✨ Vibe Emotion</div>
+        <div class="controles-topo">
+            <span id="label-modo" style="font-size: 10px; opacity: 0.7;">MODO: INFINITO 🔄</span>
+        </div>
+    </header>
 
-    <div class="video-player">
-        <video id="meuVideo" loop playsinline></video>
-        <div class="controles">
-            <button class="btn-oio" onclick="curtir()">❤️</button>
-            <div class="cont" id="txt-likes">0</div>
-            <button class="btn-oio">💬</button>
-            <div class="cont">0</div>
+    <div id="feed-container">
+        <div id="placeholder" class="video-section">
+            <p style="text-align: center; padding: 20px;">Toque abaixo para começar sua jornada de memórias 🎬</p>
         </div>
     </div>
 
-    <button id="btn-add" onclick="document.getElementById('input-video').click()">🎬 NOVO VÍDEO</button>
-    <input type="file" id="input-video" accept="video/*" style="display:none" onchange="abrirVideo(event)">
+    <button id="add-vibe" onclick="document.getElementById('input-vibe').click()">🎬 NOVO VÍDEO</button>
+    <input type="file" id="input-vibe" accept="video/*" style="display:none" onchange="processarVideo(event)">
 
     <script>
-        // --- ⌚ HORA INTELIGENTE (Plano Sem Agulha) ---
-        function mostrarHora() {
+        // ⌚ Identidade Temporal OIO
+        function iniciarRelogio() {
             const agora = new Date();
             const hoje = agora.toLocaleDateString('pt-BR');
             const hora = agora.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-            const ultimaVez = localStorage.getItem("vibe_emotion_data");
-
-            let texto = (ultimaVez !== hoje) ? `${hoje} - ${hora}` : hora;
-            document.getElementById("topo-vibe").innerText = "Vibe Emotion • " + texto;
-            localStorage.setItem("vibe_emotion_data", hoje);
+            const ultima = localStorage.getItem("vibe_data");
+            document.getElementById("hora-oio").innerText = (ultima !== hoje) ? `${hoje} - ${hora}` : `Vibe Emotion • ${hora}`;
+            localStorage.setItem("vibe_data", hoje);
         }
 
-        // --- 🚀 ENGENHARIA DE LEVEZA (Galeria Local) ---
-        function abrirVideo(event) {
-            const arquivo = event.target.files[0];
-            if (arquivo) {
-                const urlVideo = URL.createObjectURL(arquivo);
-                const player = document.getElementById("meuVideo");
-                player.src = urlVideo;
-                player.play();
-                // Reset de likes local
-                document.getElementById("txt-likes").innerText = "0";
-                localStorage.setItem("vibe_emotion_likes", 0);
-            }
+        // 🎬 Engenharia de Fluxo (Infinito)
+        function processarVideo(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const url = URL.createObjectURL(file);
+            const container = document.getElementById('feed-container');
+            
+            // Remove o placeholder no primeiro vídeo
+            const placeholder = document.getElementById('placeholder');
+            if (placeholder) placeholder.remove();
+
+            // Cria a nova lâmina de vídeo (Slide)
+            const section = document.createElement('div');
+            section.className = 'video-section';
+            section.innerHTML = `
+                <video src="${url}" loop playsinline onclick="this.paused ? this.play() : this.pause()"></video>
+                <div class="lateral">
+                    <button class="btn-acao" onclick="curtir(this)">❤️</button>
+                    <div class="num">0</div>
+                    <button class="btn-acao">💬</button>
+                    <div class="num">0</div>
+                </div>
+            `;
+            
+            container.appendChild(section);
+            
+            // Scroll suave para o novo vídeo
+            section.scrollIntoView();
+            section.querySelector('video').play();
         }
 
-        function curtir() {
-            let n = parseInt(localStorage.getItem("vibe_emotion_likes") || 0);
-            n++;
-            localStorage.setItem("vibe_emotion_likes", n);
-            document.getElementById("txt-likes").innerText = n;
-            if(navigator.vibrate) navigator.vibrate(40);
+        function curtir(btn) {
+            const label = btn.nextElementSibling;
+            let n = parseInt(label.innerText);
+            label.innerText = n + 1;
+            btn.style.transform = "scale(1.3)";
+            setTimeout(() => btn.style.transform = "scale(1)", 200);
+            if(navigator.vibrate) navigator.vibrate(50);
         }
 
-        mostrarHora();
+        iniciarRelogio();
     </script>
 </body>
 </html>
-
