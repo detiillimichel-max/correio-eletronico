@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Vibe Emotion</title>
+    <style>
+        body { margin: 0; background: #000; color: #fff; font-family: sans-serif; overflow: hidden; display: flex; flex-direction: column; height: 100vh; }
+        #topo-vibe { padding: 15px; text-align: center; font-size: 14px; background: rgba(0,0,0,0.5); position: absolute; width: 100%; z-index: 10; font-weight: bold; color: #00f2ea; }
+        .video-player { flex: 1; display: flex; align-items: center; justify-content: center; background: #000; position: relative; }
+        video { width: 100%; height: 100%; object-fit: contain; }
+        .controles { position: absolute; right: 20px; bottom: 100px; display: flex; flex-direction: column; gap: 25px; align-items: center; }
+        .btn-oio { background: none; border: none; font-size: 35px; cursor: pointer; filter: drop-shadow(0 2px 5px rgba(0,0,0,0.8)); }
+        .cont { font-size: 14px; margin-top: -10px; font-weight: bold; }
+        #btn-add { position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%); background: #fff; color: #000; padding: 12px 25px; border-radius: 30px; font-weight: bold; border: none; font-size: 16px; box-shadow: 0 4px 15px rgba(255,255,255,0.3); }
+    </style>
+</head>
+<body>
+
+    <div id="topo-vibe">✨ VIBE EMOTION</div>
+
+    <div class="video-player">
+        <video id="meuVideo" loop playsinline></video>
+        <div class="controles">
+            <button class="btn-oio" onclick="curtir()">❤️</button>
+            <div class="cont" id="txt-likes">0</div>
+            <button class="btn-oio">💬</button>
+            <div class="cont">0</div>
+        </div>
+    </div>
+
+    <button id="btn-add" onclick="document.getElementById('input-video').click()">🎬 NOVO VÍDEO</button>
+    <input type="file" id="input-video" accept="video/*" style="display:none" onchange="abrirVideo(event)">
+
+    <script>
+        // --- ⌚ HORA INTELIGENTE (Plano Sem Agulha) ---
+        function mostrarHora() {
+            const agora = new Date();
+            const hoje = agora.toLocaleDateString('pt-BR');
+            const hora = agora.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+            const ultimaVez = localStorage.getItem("vibe_emotion_data");
+
+            let texto = (ultimaVez !== hoje) ? `${hoje} - ${hora}` : hora;
+            document.getElementById("topo-vibe").innerText = "Vibe Emotion • " + texto;
+            localStorage.setItem("vibe_emotion_data", hoje);
+        }
+
+        // --- 🚀 ENGENHARIA DE LEVEZA (Galeria Local) ---
+        function abrirVideo(event) {
+            const arquivo = event.target.files[0];
+            if (arquivo) {
+                const urlVideo = URL.createObjectURL(arquivo);
+                const player = document.getElementById("meuVideo");
+                player.src = urlVideo;
+                player.play();
+                // Reset de likes local
+                document.getElementById("txt-likes").innerText = "0";
+                localStorage.setItem("vibe_emotion_likes", 0);
+            }
+        }
+
+        function curtir() {
+            let n = parseInt(localStorage.getItem("vibe_emotion_likes") || 0);
+            n++;
+            localStorage.setItem("vibe_emotion_likes", n);
+            document.getElementById("txt-likes").innerText = n;
+            if(navigator.vibrate) navigator.vibrate(40);
+        }
+
+        mostrarHora();
+    </script>
+</body>
+</html>
+
