@@ -1,11 +1,9 @@
 export async function carregar(db) {
-    console.log("🎬 OIO ONE: Busca única (once) iniciada.");
-    // Regra: Limite de 10 itens para performance
-    const snap = await db.ref('vibes').limitToLast(10).once('value');
+    console.log("🎬 OIO ONE: Buscando vídeos...");
+    const snapshot = await db.ref('vibes').limitToLast(1).once('value');
     let lista = [];
-    snap.forEach(c => {
-        lista.push({ id: c.key, ...c.val() });
+    snapshot.forEach(child => {
+        lista.push({ id: child.key, ...child.val() });
     });
     return lista.reverse();
 }
-
