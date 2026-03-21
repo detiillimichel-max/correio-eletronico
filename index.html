@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Vibe Emotion - OIO ONE</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -16,7 +17,7 @@
         <video id="main-video" autoplay loop muted playsinline></video>
         
         <div class="sidebar">
-            <div class="action-item"><span class="icon-vibe">💖</span><div class="count">0</div></div>
+            <div class="action-item"><span class="icon-vibe" style="font-size:35px">💖</span><div class="count">0</div></div>
             <div class="action-item" onclick="location.href='https://vibe-mensagens.vercel.app/'">
                 <div class="btn-back-chat">💬</div>
                 <div class="count">Chat</div>
@@ -30,27 +31,38 @@
 
     <input type="file" id="file-up" style="display:none" accept="video/*">
 
+    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database-compat.js"></script>
+
     <script type="module">
         import { App } from './app.js';
         import { Uploader } from './upload.js';
         
-        // Configuração direta para o celular
         const firebaseConfig = {
             apiKey: "AIzaSyAkJlFLnzPdwJUbn-J5Qk5DSlKmBl4ZYMZw",
             databaseURL: "https://vibe-app-bbba2-default-rtdb.firebaseio.com"
         };
+        
         if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        async function init() {
-            const vibes = await App.inicializar(db); 
-            if(vibes && vibes[0]) {
-                document.getElementById('main-video').src = vibes[0].url;
-            }
+        async function iniciar() {
+            try {
+                const vibes = await App.inicializar(db); 
+                const player = document.getElementById('main-video');
+                if(vibes && vibes.length > 0) {
+                    player.src = vibes[0].url;
+                    player.play();
+                }
+            } catch (e) { console.error("Erro ao iniciar:", e); }
         }
 
-        document.getElementById('file-up').onchange = (e) => Uploader.enviar(db, e.target.files[0], "Michel");
-        init();
+        document.getElementById('file-up').onchange = (e) => {
+            const file = e.target.files[0];
+            if(file) Uploader.enviar(db, file, "Michel");
+        };
+
+        iniciar();
     </script>
 </body>
 </html>
