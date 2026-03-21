@@ -1,90 +1,90 @@
-/* 🎬 DESIGN VIBE EMOTION - OIO ONE ✨ */
-:root {
-    --bg: #000000;
-    --text: #ffffff;
-    --accent: #00f2ea;
-}
+<style>
+/* =========================
+REVOLUÇÃO VISUAL OIO ONE ✨
+========================= */
+:root { --accent: #00e5ff; --glass: rgba(255, 255, 255, 0.1); }
 
-body {
-    margin: 0;
-    background-color: var(--bg);
-    color: var(--text);
-    font-family: -apple-system, sans-serif;
-    overflow: hidden;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:#000; color:#fff; font-family: sans-serif; overflow:hidden; height: 100vh; }
 
-/* Cabeçalho */
-header {
-    position: absolute;
-    top: 0;
-    width: 100%;
-    padding: 15px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    z-index: 50;
+/* TOPO TRANSPARENTE (IDENTIDADE) */
+header, #topo {
+    position:fixed; top:0; left:0; right:0; height:80px;
     background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
+    display:flex; align-items:center; padding:20px; z-index:2000;
+}
+.avatar, #fotoPerfil { 
+    width:45px; height:45px; border-radius:50%; 
+    border: 2px solid var(--accent); background-size:cover; 
+    margin-right:12px; box-shadow: 0 0 15px var(--accent); 
 }
 
-.avatar { width: 35px; height: 35px; border-radius: 50%; border: 1.5px solid #fff; }
+/* FEED EM PROFUNDIDADE (ABSOLUTO) */
+#feed-container, .tela { position:fixed; inset:0; display:flex; align-items:center; justify-content:center; z-index: 1; }
+video, iframe { width: 100%; height: 100vh; object-fit: cover; }
 
-/* Player de Vídeo */
-#feed-container {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    background: #000;
+/* CHAT: A LÂMINA DE VIDRO OIO ONE */
+#chat {
+    position: fixed; inset: 0; z-index: 1500;
+    background: rgba(0,0,0,0.4);
+    backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+    transform: translateY(100%); /* Começa embaixo */
+    transition: transform 0.6s cubic-bezier(0.19, 1, 0.22, 1);
+    display: flex; flex-direction: column;
+}
+#chat.active { transform: translateY(0); }
+
+#mensagens { flex:1; overflow-y:auto; padding: 100px 20px 20px; }
+.msg { 
+    margin-bottom:12px; padding: 14px; 
+    background: var(--glass); border-radius: 20px; 
+    border: 1px solid rgba(255,255,255,0.1); 
+    font-size: 14px; line-height: 1.4;
 }
 
-video { width: 100%; height: 100vh; object-fit: cover; }
+/* INPUT MODERNO */
+#chatInput { padding: 20px; background: rgba(0,0,0,0.6); display:flex; gap:10px; align-items:center; padding-bottom: env(safe-area-inset-bottom, 20px); }
+#msg { flex:1; padding:12px 20px; border-radius:30px; border:none; background: #222; color:#fff; outline:none; }
+#btnEnviar { background: var(--accent); color:#000; border:none; padding:10px 20px; border-radius:30px; font-weight:bold; }
 
-/* 📱 BOTÃO POSTAR VIBE */
+/* BOTÕES LATERAIS (ERGONOMIA DINÂMICA) */
+.sidebar, #controles { 
+    position:fixed; right:20px; bottom:110px; 
+    display:flex; flex-direction:column; gap:20px; z-index:2100; 
+}
+.action-item, .botao { 
+    background: var(--glass); backdrop-filter: blur(10px); 
+    width:55px; height:55px; display:flex; align-items:center; 
+    justify-content:center; border-radius:50%; 
+    border: 1px solid rgba(255,255,255,0.2); 
+    font-size: 24px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); 
+    cursor: pointer; transition: 0.3s;
+}
+.action-item:active { transform: scale(0.9); }
+
+/* BOTÃO POSTAR CENTRAL (OIO ONE DNA) */
 .btn-postar {
-    position: fixed;
-    bottom: 30px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: #fff;
-    color: #000;
-    padding: 14px 30px;
-    border-radius: 40px;
-    font-weight: 800;
-    border: none;
-    box-shadow: 0 0 20px var(--accent);
-    z-index: 100;
-    font-size: 14px;
+    position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+    background: #fff; color: #000; padding: 14px 30px; border-radius: 40px;
+    font-weight: 800; border: none; z-index: 100; box-shadow: 0 0 20px var(--accent);
+}
+</style>
+
+<script>
+/* =========================
+MOTOR DE INTERAÇÃO OIO ONE
+========================= */
+function toggleChat() {
+    const chat = document.getElementById('chat');
+    chat.classList.toggle('active');
+    
+    // Ergonomia Dinâmica: Vibra sutilmente ao deslizar a lâmina
+    if(navigator.vibrate) navigator.vibrate(40);
 }
 
-/* ❤️ BARRA LATERAL */
-.sidebar {
-    position: absolute;
-    right: 15px;
-    bottom: 120px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 25px;
-    z-index: 60;
-}
-
-.action-item { text-align: center; cursor: pointer; }
-.count { font-size: 12px; font-weight: bold; margin-top: 5px; }
-
-/* Ícone de Voltar (Chat) */
-.btn-back-chat {
-    width: 48px;
-    height: 48px;
-    background: rgba(255,255,255,0.2);
-    backdrop-filter: blur(10px);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 24px;
-    border: 1px solid rgba(255,255,255,0.4);
-}
+// Configura o botão de chat para usar a nova função
+document.addEventListener('DOMContentLoaded', () => {
+    const btnChat = document.querySelector('.btn-back-chat') || document.querySelector('.btn-main');
+    if(btnChat) btnChat.onclick = toggleChat;
+});
+</script>
