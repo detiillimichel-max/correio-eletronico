@@ -1,18 +1,90 @@
+/* 🎬 DESIGN VIBE EMOTION - OIO ONE ✨ */
+:root {
+    --bg: #000000;
+    --text: #ffffff;
+    --accent: #00f2ea;
+}
+
+body {
+    margin: 0;
+    background-color: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, sans-serif;
+    overflow: hidden;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Cabeçalho */
+header {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    z-index: 50;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
+}
+
+.avatar { width: 35px; height: 35px; border-radius: 50%; border: 1.5px solid #fff; }
+
+/* Player de Vídeo */
+#feed-container {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    background: #000;
+}
+
+video { width: 100%; height: 100vh; object-fit: cover; }
+
+/* 📱 BOTÃO POSTAR VIBE */
+.btn-postar {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #fff;
+    color: #000;
+    padding: 14px 30px;
+    border-radius: 40px;
+    font-weight: 800;
+    border: none;
+    box-shadow: 0 0 20px var(--accent);
+    z-index: 100;
+    font-size: 14px;
+}
+
+/* ❤️ BARRA LATERAL */
+.sidebar {
+    position: absolute;
+    right: 15px;
+    bottom: 120px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 25px;
+    z-index: 60;
+}
+
+.action-item { text-align: center; cursor: pointer; }
+.count { font-size: 12px; font-weight: bold; margin-top: 5px; }
+
+/* Ícone de Voltar (Chat) */
 .btn-back-chat {
-    width: 45px;
-    height: 45px;
-    background: rgba(255,255,255,0.15);
-    backdrop-filter: blur(5px);
+    width: 48px;
+    height: 48px;
+    background: rgba(255,255,255,0.2);
+    backdrop-filter: blur(10px);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 24px;
-    border: 1px solid rgba(255,255,255,0.3);
-    transition: 0.3s;
-}
-
-.btn-back-chat:active {
-    transform: scale(0.9);
-    background: var(--accent);
+    border: 1px solid rgba(255,255,255,0.4);
 }
