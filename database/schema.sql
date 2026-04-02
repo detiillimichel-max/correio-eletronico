@@ -1,0 +1,10 @@
+/public
+/src
+/database
+   schema.sql
+.env
+index.html
+README.md
+manifest.json
+package.json
+vite.config.ts
