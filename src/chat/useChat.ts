@@ -1,5 +1,7 @@
+// src/chat/useChat.ts
 import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabaseClient";
+import { sendMessage } from "./chatService";
 
 export interface Message {
   id: string;
@@ -41,20 +43,28 @@ export function useChat(roomId: string) {
     };
   }, [roomId]);
 
-  const sendMessage = async (
+  const send = async (
     senderId: string,
     receiverId: string,
     content: string,
     type: "text" | "audio" | "image" = "text"
   ) => {
-    await supabase.from("messages").insert({
-      sender_id: senderId,
-      receiver_id: receiverId,
-      room_id: roomId,
-      content,
-      type,
-    });
+    // Mostra imediatamente na tela
+    setMessages((prev) => [
+      ...prev,
+      {
+        id: Date.now().toString(),
+        sender_id: senderId,
+        receiver_id: receiverId,
+        content,
+        type,
+        created_at: new Date().toISOString(),
+      },
+    ]);
+
+    // Salva no banco
+    await sendMessage(roomId, senderId, receiverId, content, type);
   };
 
-  return { messages, sendMessage };
+  return { messages, send };
 }
