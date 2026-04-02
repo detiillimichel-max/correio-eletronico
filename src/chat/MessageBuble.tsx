@@ -1,17 +1,34 @@
+// src/chat/MessageBuble.tsx
 import React from "react";
 import { Message } from "./useChat";
 
-export function MessageBubble({ message }: { message: Message }) {
+interface Props {
+  message: Message;
+  currentUserId: string;
+}
+
+export default function MessageBuble({ message, currentUserId }: Props) {
+  const isMine = message.sender_id === currentUserId;
+
   return (
-    <div style={{
-      background: "rgba(255,255,255,0.1)",
-      borderRadius: "12px",
-      padding: "8px",
-      margin: "4px 0"
-    }}>
-      {message.type === "text" && <p>{message.content}</p>}
-      {message.type === "image" && <img src={message.content} alt="img" style={{ maxWidth: "200px" }} />}
-      {message.type === "audio" && <audio controls src={message.content}></audio>}
+    <div
+      style={{
+        display: "flex",
+        justifyContent: isMine ? "flex-end" : "flex-start",
+        margin: "8px 0",
+      }}
+    >
+      <div
+        style={{
+          background: isMine ? "#4a90e2" : "#eee",
+          color: isMine ? "#fff" : "#000",
+          padding: "10px",
+          borderRadius: "12px",
+          maxWidth: "70%",
+        }}
+      >
+        {message.content}
+      </div>
     </div>
   );
 }
