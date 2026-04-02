@@ -1,42 +1,63 @@
+// src/auth/login.tsx
 import React, { useState } from "react";
-import { signUp, signIn } from "./authService";
+import { supabase } from "../lib/supabaseClient";
 
-export function Login() {
+export default function Login({ onLogin }: { onLogin: (userId: string) => void }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [username, setUsername] = useState("");
-  const [avatarUrl, setAvatarUrl] = useState("");
-  const [isRegister, setIsRegister] = useState(false);
 
-  const handleSubmit = async () => {
-    try {
-      if (isRegister) {
-        await signUp(email, password, username, avatarUrl);
-        alert("Usuário registrado com sucesso!");
-      } else {
-        await signIn(email, password);
-        alert("Login realizado com sucesso!");
+  const handleLogin = async () => {
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (error) {
+      alert("Erro no login: " + error.message);
+      return;
+    }
+
+    const user = data.user;
+    if (user) {
+      // Buscar perfil do usuário
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("name, photo_url")
+        .eq("id", user.id)
+        .single();
+
+      // Se não existir perfil, cria um vazio
+      if (!profile) {
+        await supabase.from("profiles").insert({
+          id: user.id,
+          name: "Usuário",
+          photo_url: "",
+        });
       }
-    } catch (err: any) {
-      alert("Erro: " + err.message);
+
+      onLogin(user.id); // Redireciona para o chat
     }
   };
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h2>{isRegister ? "Registrar" : "Login"}</h2>
-      <input placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
-      <input placeholder="Senha" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
-      {isRegister && (
-        <>
-          <input placeholder="Nome de usuário" value={username} onChange={(e) => setUsername(e.target.value)} />
-          <input placeholder="URL da foto de perfil" value={avatarUrl} onChange={(e) => setAvatarUrl(e.target.value)} />
-        </>
-      )}
-      <button onClick={handleSubmit}>{isRegister ? "Registrar" : "Entrar"}</button>
-      <p onClick={() => setIsRegister(!isRegister)} style={{ cursor: "pointer", color: "blue" }}>
-        {isRegister ? "Já tem conta? Faça login" : "Não tem conta? Registre-se"}
-      </p>
+    <div style={{ padding: 20 }}>
+      <h2>Login</h2>
+      <input
+        type="email"
+        placeholder="E-mail"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        style={{ display: "block", marginBottom: 10 }}
+      />
+      <input
+        type="password"
+        placeholder="Senha"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+        style={{ display: "block", marginBottom: 10 }}
+      />
+
+      <button onClick={handleLogin}>Entrar</button>
     </div>
   );
 }
